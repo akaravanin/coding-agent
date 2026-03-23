@@ -1,6 +1,5 @@
 use async_trait::async_trait;
 use serde_json::json;
-use std::path::PathBuf;
 use tokio::fs;
 
 use agent_protocol::{AgentError, ToolCall, ToolResult, ToolSchema};

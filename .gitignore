@@ -6,3 +6,6 @@ Cargo.lock
 memory/
 **/memory/
 .agent-memory/
+
+# Local config with API keys — use .params.example as the template
+.params

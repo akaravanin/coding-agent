@@ -24,6 +24,8 @@ pub enum ToolResultStatus {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ToolResult {
     pub call_id: ToolCallId,
+    /// The tool's name — needed by providers (e.g. Gemini) that match results by name, not ID.
+    pub tool_name: Option<String>,
     pub status: ToolResultStatus,
     /// Structured output returned to the LLM.
     pub output: Value,
@@ -35,6 +37,7 @@ impl ToolResult {
     pub fn success(call_id: impl Into<String>, output: Value) -> Self {
         Self {
             call_id: call_id.into(),
+            tool_name: None,
             status: ToolResultStatus::Success,
             output,
             display: None,
@@ -45,6 +48,7 @@ impl ToolResult {
         let msg = message.into();
         Self {
             call_id: call_id.into(),
+            tool_name: None,
             status: ToolResultStatus::Error,
             output: Value::String(msg.clone()),
             display: Some(msg),
@@ -52,9 +56,11 @@ impl ToolResult {
     }
 
     pub fn denied(call_id: impl Into<String>, tool_name: impl Into<String>) -> Self {
-        let msg = format!("Tool '{}' was denied by the user", tool_name.into());
+        let name = tool_name.into();
+        let msg = format!("Tool '{name}' was denied by the user");
         Self {
             call_id: call_id.into(),
+            tool_name: Some(name),
             status: ToolResultStatus::Denied,
             output: Value::String(msg.clone()),
             display: Some(msg),

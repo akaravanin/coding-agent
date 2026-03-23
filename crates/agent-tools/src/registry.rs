@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 use async_trait::async_trait;
-use serde_json::Value;
 
 use agent_protocol::{AgentError, ToolCall, ToolResult, ToolSchema};
 use crate::sandbox::Sandbox;

@@ -50,10 +50,13 @@ pub async fn dispatch_tool_call(
     }
 
     // Execute
-    let result = match tool.execute(&call, sandbox).await {
+    let mut result = match tool.execute(&call, sandbox).await {
         Ok(r) => r,
         Err(e) => ToolResult::error(call.id.clone(), e.to_string()),
     };
+
+    // Always stamp the tool name so providers that match by name (e.g. Gemini) work correctly
+    result.tool_name = Some(call.name.clone());
 
     let _ = events.send(AgentEvent::ToolCallCompleted { result: result.clone() });
     result

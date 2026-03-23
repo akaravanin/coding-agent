@@ -170,12 +170,29 @@ Wrapper around `docker compose run --rm cli` that:
 
 Default `ANTHROPIC_API_KEY` fallback is set in the script for quick testing — replace with a real key.
 
+## LLM Providers
+
+| Provider | Status | Default model |
+|----------|--------|---------------|
+| Anthropic | `crates/agent-llm/src/anthropic.rs` | `claude-sonnet-4-6` |
+| Gemini | `crates/agent-llm/src/gemini.rs` | `gemini-2.0-flash` |
+
+**Gemini-specific notes:**
+- Auth via `?key=` query param (not a header)
+- Roles are `user` / `model` (not `assistant`)
+- System prompt goes in `systemInstruction` field
+- Tool schemas use `functionDeclarations` (not `input_schema` directly)
+- Tool calls use `functionCall` / `functionResponse` parts
+- Tool results sent as role `user`, matched by function name (not ID)
+- `ToolResult.tool_name` is populated by `dispatch.rs` to enable name-based matching
+- Gemini doesn't provide tool call IDs — we generate `gemini-call-{index}`
+
 ## Adding a New LLM Provider
 
 1. Create `crates/agent-llm/src/<name>.rs`
 2. Implement `LlmProvider` trait (`name`, `complete`, `stream`)
 3. Re-export from `crates/agent-llm/src/lib.rs`
-4. No changes needed in `agent-core`, `agent-tools`, or `cli`
+4. Add a `ProviderConfig` variant in `crates/cli/src/session.rs` and a `--provider` arm in `main.rs`
 
 ## Adding a New Tool
 

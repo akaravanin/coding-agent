@@ -8,3 +8,4 @@ pub use provider::LlmProvider;
 pub use request::{LlmRequest, LlmResponse};
 pub use stream::LlmStreamEvent;
 pub use anthropic::AnthropicProvider;
+pub use gemini::GeminiProvider;

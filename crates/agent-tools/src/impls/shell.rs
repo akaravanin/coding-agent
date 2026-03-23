@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use serde_json::{json, Value};
+use serde_json::json;
 use tokio::process::Command;
 
 use agent_protocol::{AgentError, ToolCall, ToolResult, ToolSchema};
@@ -82,6 +82,7 @@ impl Tool for ShellTool {
             // Return as error so the agent knows the command failed, but include output.
             Ok(ToolResult {
                 call_id: call.id.clone(),
+                tool_name: None,
                 status: agent_protocol::ToolResultStatus::Error,
                 output: result,
                 display: Some(format!("exit {exit_code}: {stderr}")),

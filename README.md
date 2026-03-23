@@ -53,15 +53,18 @@ git clone <repo>
 cd coding-agent
 
 export ANTHROPIC_API_KEY=sk-...
+export GEMINI_API_KEY=AIza...
 
-./scripts/start.sh                          # interactive chat, workspace = cwd
-./scripts/start.sh "fix the failing test"   # one-shot run
-./scripts/start.sh --workspace /my/project  # point at a different project
-./scripts/start.sh --yes "add docs"         # auto-approve all tool calls (no prompts)
-./scripts/start.sh --rebuild                # force Docker image rebuild
+./scripts/start.sh                               # Anthropic, interactive chat
+./scripts/start.sh --provider gemini             # Gemini, interactive chat
+./scripts/start.sh "fix the failing test"        # one-shot run
+./scripts/start.sh --provider gemini "explain this codebase"
+./scripts/start.sh --workspace /my/project       # different workspace
+./scripts/start.sh --yes "add docs"              # auto-approve all tool calls
+./scripts/start.sh --rebuild                     # force Docker image rebuild
 ```
 
-`start.sh` builds the Docker image on first run, mounts your workspace into the container, and passes through your API key automatically.
+`start.sh` builds the Docker image on first run, mounts your workspace into the container, and passes through API keys automatically.
 
 ## CLI reference
 
@@ -73,10 +76,12 @@ Commands:
   chat           Interactive REPL session (default when no command given)
 
 Options:
-  -w, --workspace <DIR>   Workspace directory [default: current dir]
-      --model <MODEL>     Claude model to use [default: claude-sonnet-4-6]
-      --yes               Auto-approve all tool calls without prompting
-      --anthropic-key     API key (or set ANTHROPIC_API_KEY env var)
+  -w, --workspace <DIR>      Workspace directory [default: current dir]
+      --provider <PROVIDER>  LLM provider: anthropic, gemini [default: anthropic]
+      --model <MODEL>        Model override (defaults per provider)
+      --yes                  Auto-approve all tool calls without prompting
+      --anthropic-key        Anthropic API key (or ANTHROPIC_API_KEY)
+      --gemini-key           Gemini API key (or GEMINI_API_KEY)
 ```
 
 **One-shot:**
@@ -273,10 +278,10 @@ The agent can write persistent notes to `{workspace}/memory/*.md` via `memory_wr
 
 ## LLM providers
 
-| Provider | Status |
-|----------|--------|
-| Anthropic (Claude) | Implemented |
-| Google Gemini | Stub — ready to implement |
+| Provider | Status | Default model |
+|----------|--------|---------------|
+| Anthropic (Claude) | Implemented | `claude-sonnet-4-6` |
+| Google Gemini | Implemented | `gemini-2.0-flash` |
 
 Adding a provider means implementing one trait:
 
