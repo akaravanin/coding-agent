@@ -1,0 +1,10 @@
+[package]
+name = "agent-protocol"
+description = "Shared message types, tool schemas, and event definitions. No I/O."
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }

@@ -1,0 +1,8 @@
+/target
+**/*.rs.bk
+Cargo.lock
+
+# Agent memory files - written by the agent at runtime, not committed
+memory/
+**/memory/
+.agent-memory/

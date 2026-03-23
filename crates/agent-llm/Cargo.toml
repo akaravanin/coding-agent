@@ -1,0 +1,17 @@
+[package]
+name = "agent-llm"
+description = "LLM provider trait and implementations (Anthropic, Gemini, ...)."
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+agent-protocol = { workspace = true }
+tokio = { workspace = true }
+tokio-stream = { workspace = true }
+futures = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+reqwest = { workspace = true }
+async-trait = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }

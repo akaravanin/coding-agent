@@ -1,0 +1,54 @@
+services:
+  # --- dev services (source mounted, no rebuild needed) ---
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    image: code-agent:dev
+    volumes:
+      - .:/app
+      - cargo-cache:/usr/local/cargo/registry
+      - cargo-git:/usr/local/cargo/git
+      - target-cache:/app/target
+    working_dir: /app
+    environment:
+      - RUST_LOG=${RUST_LOG:-info}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+
+  check:
+    extends: dev
+    command: cargo check
+
+  test:
+    extends: dev
+    command: cargo test
+
+  clippy:
+    extends: dev
+    command: cargo clippy -- -D warnings
+
+  # --- run the CLI against a local workspace ---
+  # Usage: docker compose run --rm cli run "fix the tests"
+  #        docker compose run --rm cli chat
+  cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: code-agent:latest
+    volumes:
+      # Mount a workspace directory into the container
+      - ${WORKSPACE:-${PWD}}:/workspace
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+
+volumes:
+  cargo-cache:
+  cargo-git:
+  target-cache:
